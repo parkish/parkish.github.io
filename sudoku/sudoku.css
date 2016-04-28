@@ -1,0 +1,39 @@
+.cell {
+	width: 30px;
+	height: 30px;
+	padding: 0px;
+	margin: 0px;
+	/* this is an annoyance - text input boxes have some built-in padding that was skewing
+	my percentage calculations - this elminates that padding */
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+	border: 1px dashed black;
+	float: left;
+	text-align: center;
+}
+.square {
+	width: 96px;
+	height: 96px;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	border: 1px solid black;
+	float: left;
+}
+
+.hasPossibles {
+	font-size: 8px;
+	font-style: italic;
+	color: red;
+}
+
+.calculated {
+	color: white;
+	background-color: grey;
+}
+
+#grid {
+	width: 300px;
+	height: 300px;
+}
