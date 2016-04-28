@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<title>Sudoku Helper</title>
+<style type="text/css" media="screen">
+.cell {
+	width: 30px; 
+	height: 30px;
+	padding: 0px;
+	margin: 0px;
+	/* this is an annoyance - text input boxes have some built-in padding that was skewing 
+	my percentage calculations - this elminates that padding */
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+	border: 1px dashed black;
+	float: left;
+	text-align: center;
+}
+.square {
+	width: 96px;
+	height: 96px;
+	padding: 0px; 
+	margin: 0px;
+	border: 0px;
+	border: 1px solid black;
+	float: left;
+}
+
+.hasPossibles {
+	font-size: 8px;
+	font-style: italic;
+	color: red;
+}
+
+.calculated {
+	color: white;
+	background-color: grey;
+}
+
+#grid { 
+	width: 300px;
+	height: 300px;
+}
+</style>
+<script type="text/javascript" charset="utf-8" src="sudoku.js"></script>
+<script type="text/javascript" charset="utf-8">
+function onLoad() {
+	var predefinedGrids = getListOfPredefinedGrids();
+	var predefinedSelect = document.getElementById('predefinedGrids');
+
+	predefinedGrids.forEach(function (gridFunc) {
+		var option = document.createElement("option");
+		option.innerHTML = gridFunc.description;
+		option.func = gridFunc;
+		
+		predefinedSelect.appendChild(option);
+	});
+	
+	onChangeSelect(predefinedSelect);
+}
+
+function onChangeSelect(select) {
+	var func = select.options[select.selectedIndex].func;
+	populateGrid(func);
+}
+
+</script>
+</head>
+
+<body onLoad="onLoad()">
+<div id="grid"></div>
+<div>Possible values:<span id="possibles"></span></div>
+<select id="predefinedGrids" onchange="onChangeSelect(this)">
+</select>
+</body>
+</html>

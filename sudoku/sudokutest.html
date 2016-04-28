@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+           "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>sudoku tester</title>
+  </head>
+  <body>
+    <script type="text/javascript" src="http://busterjs.org/releases/latest/buster-test.js"></script>
+	<script type="text/javascript" charset="utf-8" src="sudoku.js">	</script>
+	<script type="text/javascript" charset="utf-8">
+	
+	var assert = buster.assert;
+
+	function stubGetCell(self, nullPossibleId) {
+		self.stub(window, "getCell", function (cellId) {
+			if (cellId === nullPossibleId) { 
+				return { id : cellId, possibles : null }; 
+			}
+			else  {
+				return { id : cellId, possibles : "" };
+			}
+		});		
+	}
+
+	function getCoords(cells) {
+		return cells.map(function (cell) { return cell.id; });
+	}
+
+	buster.testCase("Test neighbor cell crapola", {
+	    setUp: function () {
+	        stubGetCell(this, "B5");
+	    },
+
+	    "neighborCells": {
+	        "get cells in square" : function () {
+	            var cells = getSquareNeighborCells("B6");
+	            var expected = [ "A4", "A5", "A6", "B4", "C4", "C5", "C6" ];
+	            assert.equals(expected, getCoords(cells));
+	        },
+	        "get cells in row" : function () {
+	        	var cells = getRowNeighborCells("B6");
+	        	var expected = [ 'B1', 'B2', 'B3', 'B4', 'B7', 'B8', 'B9' ];
+	        	assert.equals(expected, getCoords(cells));
+	        },
+	        "get cells in column" : function () {
+	        	var cells = getColumnNeighborCells("D5");
+	        	var expected = [ 'A5', 'C5', 'E5', 'F5', 'G5', 'H5', 'I5' ];
+	        	assert.equals(expected, getCoords(cells));
+	        }
+	    }
+	});
+
+	</script>	
+  </body>
+</html>
