@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="8bit.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<link href="8bit.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript">
+	var eightBit = null;
+	
+	$(document).ready(function() {
+		
+		eightBit = new EightBit(document.getElementById('canvas'));
+		
+		$('#canvas').click(function(event) {
+			eightBit.handleClick(event);
+		});
+		
+		$('#saveButton').click(function(event) {
+			eightBit.saveImage();
+		});
+		
+		$('#clearButton').click(function(event) {
+			eightBit.clear();
+		});
+		
+		var colors = document.getElementById('colors');
+		generateColorPickers(colors);
+		
+		$('body').click(function(event) {
+			eightBit.handleClickOnColorPickers(event);
+		});
+	});	
+</script>
+</head>
+<body>
+	
+<!-- <b>8-bit sprite creator</b> -->
+<br>
+
+<div id="appDiv">
+	<canvas id="canvas" width="100px" height="100px">
+		<div>I guess your browser doesn't support canvas</div>
+	</canvas>
+	<!-- <label>Colors</label> -->
+	<div id="colors">
+	</div>
+	<div id="actions">
+		<input type="button" id="saveButton" value="save image"></input>
+		<input type="button" id="clearButton" value="clear canvas"></input>
+	</div>
+</div>
+
+<!-- <label for="images">Saved images</label> -->
+<div id="images">
+</div>
+	
+<div id="debugging">
+</div>
+	
+</body>
+</html>

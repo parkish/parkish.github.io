@@ -1,0 +1,16 @@
+/* OH MY GOD LOOK AT THIS SOPHISTICATED CSS! */
+/* TODO: fix this sophisticated CSS */
+
+
+
+#appDiv { position: absolute; left: 0px; top: 0px; }
+	#canvas { position: absolute; left: 80px; top: 0px; border: 1px solid black; }	
+	#colors { position: absolute; left: 0px; top: 0px; width: 63px; height: 168px; }
+	#actions { position: absolute; left: 0px; top: 200px; }
+
+#images { position: absolute; left: 0px; top: 250px; width: 410px; height: 100px; }
+
+#debugging { position: absolute; left: 0px; top: 400px; height: 100%; width: 200px; border: 1px solid black; display:none }
+
+.createdImage { border: 1px dashed black;}
+
