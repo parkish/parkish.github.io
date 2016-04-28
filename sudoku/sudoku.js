@@ -2,10 +2,6 @@ var gridName = "grid";
 var rowCoords = 'ABCDEFGHI';
 var columnCoords = [1,2,3,4,5,6,7,8,9];
 
-function createNamespace() {
-		
-}
-
 function createCell(id) {
 	var cellDiv = document.createElement('input');
 		
