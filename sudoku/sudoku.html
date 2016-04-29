@@ -4,11 +4,36 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>Sudoku Helper</title>
     <link rel="stylesheet" href="sudoku.css"/>
+    <style>
+        div { width: 50%; margin: 0 auto; }
+        p { width: 50%; margin: 0 auto; padding-top: 5px; padding-bottom: 15px; }
+    </style>
 </head>
 <body>
+    
+<p>
+One thing that I particularly like about Sudoku is that you can solve a puzzle purely through deduction. I got a big calendar of Sudoku puzzles 
+at one point and as I was going through them I started finding puzzles that seemed to not work that way - it appeared that the only way to 
+solve them was to guess a value and then walk those guesses throughout the remaining squares. Which seemed really lame to me. 
+</p>
+
+<p>
+So to try to prove to myself that I wasn't crazy and that it was the grid's fault, NOT MINE (sorry), I wrote this little solver that runs through
+the techniques I use to solve Sudoku grids.
+</p>
+
+<div>
+<ul>
+    <li>Grey squares mean the solver was able to deduce a value for it.</li>
+    <li>Squares that are unsolved/ambiguous show the remaining possibilities in red</li>     
+</ul>
+</div>
+    
 <div id="grid"></div>
+<div>
 <div>Possible values:<span id="possibles"></span></div>
-<select id="predefinedGrids" onchange="onChangeSelect(this)"></select>
-<script type="text/javascript" charset="utf-8" src="sudoku.js"></script>
+<div><select id="predefinedGrids" onchange="onChangeSelect(this)"></select></div>
+<div><script type="text/javascript" charset="utf-8" src="sudoku.js"></script></div>
+</div>
 </body>
 </html>
