@@ -12,15 +12,7 @@
 	float: left;
 	text-align: center;
 }
-.square {
-	width: 96px;
-	height: 96px;
-	padding: 0px;
-	margin: 0px;
-	border: 0px;
-	border: 1px solid black;
-	float: left;
-}
+
 
 .hasPossibles {
 	font-size: 8px;
