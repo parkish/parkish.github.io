@@ -176,14 +176,19 @@ function getListOfPredefinedGrids() {
 	return predefinedGrids;
 }
 
-function emptyFunction() {
-    var func = function () {};
+interface PopulationFunction extends Function {
+	readonly? : boolean
+	description?: string
+}
+
+function emptyFunction() : PopulationFunction{
+    var func = <PopulationFunction>function () {};
     func.description = "Empty - fill in your own puzzle";
     return func;
 }
 
-function exampleThursdayPuzzle() {
-	var func = function() {
+function exampleThursdayPuzzle() : PopulationFunction {
+	var func = <PopulationFunction>function() {
 		fillRow("A", " 9 1 3   ");
 		fillRow("B", "  5  6  2");
 		fillRow("C", " 7 45  6 ");
@@ -201,8 +206,8 @@ function exampleThursdayPuzzle() {
 	return func;
 }
 
-function isThisSolvableWithJustLogic() {
-	var func = function() {
+function isThisSolvableWithJustLogic() : PopulationFunction{
+	var func = <PopulationFunction>function() {
 		fillRow("A", "3   75   ");		
 		fillRow("B", "1   9  37");
 		fillRow("C", "2  4     ");
@@ -219,8 +224,8 @@ function isThisSolvableWithJustLogic() {
 	return func;
 }   
 
-function unusuallyDifficultMondayPuzzle() {
-	var func = function() {
+function unusuallyDifficultMondayPuzzle() : PopulationFunction{
+	var func = <PopulationFunction>function() {
 		fillRow("A", "   6  71 ");
 		fillRow("B", "8 1 5 9  ");
 		fillRow("C", " 7    5  ");
@@ -237,8 +242,8 @@ function unusuallyDifficultMondayPuzzle() {
 	return func;
 }
 
-function shouldBeSolvableWithJustLogic() {
-	var func = function() {
+function shouldBeSolvableWithJustLogic() : PopulationFunction{
+	var func = <PopulationFunction>function() {
 		fillRow("A", " 64 183 9");
 		fillRow("B", "  3 751  ");
 		fillRow("C", " 7      5");
@@ -257,8 +262,8 @@ function shouldBeSolvableWithJustLogic() {
 
 // as far as I know of this one is unsolvable using just logic - it requires you to guess and see if
 // any of those contraints work
-function unsolvableWithJustLogicExample() {
-	var func = function() {
+function unsolvableWithJustLogicExample() : PopulationFunction{
+	var func = <PopulationFunction>function() {
 		fillRow("A", " 247  95 ");
 		fillRow("B", " 395    7");
 		fillRow("C", "715   4 6");
@@ -276,8 +281,8 @@ function unsolvableWithJustLogicExample() {
 }
 
 // Dec 17
-function unsolvableWednesdayProblem() {
-	var func = function() {
+function unsolvableWednesdayProblem() : PopulationFunction{
+	var func = <PopulationFunction>function() {
 		fillRow("A", "     1 6 ");
 		fillRow("B", " 6 8 7  1");
 		fillRow("C", "37 5  9  ");
@@ -319,12 +324,16 @@ function isFullySolvedGrid() {
 	
 }
 
+interface PopulationOption extends HTMLOptionElement {
+	func: Function
+}
+
 function loadGrid() {
 	var predefinedGrids = getListOfPredefinedGrids();
 	var predefinedSelect = document.getElementById('predefinedGrids');
 
 	predefinedGrids.forEach(function (gridFunc) {
-		var option = document.createElement("option");
+		var option = <PopulationOption>document.createElement("option");
 		option.innerHTML = gridFunc.description;
 		option.func = gridFunc;
 
