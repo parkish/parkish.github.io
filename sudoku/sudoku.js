@@ -250,9 +250,7 @@ function eliminate(cellTextField, valueToRemove) {
         return;
     }
 }
-function isFullySolvedGrid() {
-    // if any of the cell's 'possibles' member is not null then it's not fully solved
-}
+
 function loadGrid() {
     var predefinedGrids = getListOfPredefinedGrids();
     var predefinedSelect = document.getElementById('predefinedGrids');
