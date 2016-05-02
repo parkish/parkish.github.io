@@ -2,8 +2,12 @@ var gridName = "grid";
 var rowCoords = 'ABCDEFGHI';
 var columnCoords = [1,2,3,4,5,6,7,8,9];
 
+interface CellDiv extends HTMLInputElement {
+	possibles : string
+}
+
 function createCell(id) {
-	var cellDiv = document.createElement('input');
+	var cellDiv = <CellDiv>document.createElement('input');
 		
 	// each cell is an editable text field
 	cellDiv.type = "text";
@@ -66,14 +70,6 @@ function getRowNeighborCells(id) {
 	return getCells([row], columnCoords, id);	
 }
 
-function cross(rows, columns, call) {
-	rowCoords.forEach(function(row) {
-		columnCoords.forEach(function(column) {
-			call(row,column);
-		});
-	});
-}
-
 function getCells(rows, columns, skip) {
 	var cells = [];
 
@@ -123,8 +119,8 @@ function getSquareNeighborCells(id) {
 	 );	
 }
 
-function getCell(coord) {
-	var cell = document.getElementById(coord);
+function getCell(coord) : CellDiv {
+	var cell = <CellDiv>document.getElementById(coord);
 	
 	if (cell == null) {
 		throw "Failed to find cell with coord '" + coord + "'";
