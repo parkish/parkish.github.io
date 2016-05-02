@@ -14,10 +14,10 @@ function createCell(id) {
     };
     return cellDiv;
 }
-function populateGrid(chosenPopulationFunction) {
+function populateGrid(gridData) {
     initGrid();
-    chosenPopulationFunction();
-    stylize(chosenPopulationFunction.readonly);
+    fillUsingData(gridData);
+    stylize(true);
 }
 function stylize(markReadOnly) {
     // find all squares, blat out their possibles and make it obvious that there are possibles
@@ -111,129 +111,35 @@ function setCell(id, value) {
         eliminate(cell, value);
     });
 }
-function fillRow(rowCoord, rowValuesStr) {
+function fillRow(rowId, rowValuesStr) {
     for (var i = 1; i <= 9; ++i) {
         var value = rowValuesStr[i - 1];
         if (value == " ") {
             continue;
         }
-        setCell(rowCoord + i, rowValuesStr[i - 1]);
+        setCell(rowId + i, rowValuesStr[i - 1]);
     }
 }
-function getListOfPredefinedGrids() {
-    var predefinedGrids = [
-        shouldBeSolvableWithJustLogic(),
-        unsolvableWithJustLogicExample(),
-        isThisSolvableWithJustLogic(),
-        unusuallyDifficultMondayPuzzle(),
-        exampleThursdayPuzzle(),
-        unsolvableWednesdayProblem()
-    ];
-    return predefinedGrids;
+function fillUsingData(grid) {
+    for (var row = 0; row < 9; ++row) {
+        for (var col = 0; col < 9; ++col) {
+            var value = grid[row][col];
+            if (value == " ") {
+                continue;
+            }
+            setCell(rowCoords[row] + (col + 1), value);
+        }
+    }
 }
-function emptyFunction() {
-    var func = function () { };
-    func.description = "Empty - fill in your own puzzle";
-    return func;
-}
-function exampleThursdayPuzzle() {
-    var func = function () {
-        fillRow("A", " 9 1 3   ");
-        fillRow("B", "  5  6  2");
-        fillRow("C", " 7 45  6 ");
-        fillRow("D", "   2  1  ");
-        fillRow("E", "  79     ");
-        fillRow("F", " 8  1  5 ");
-        fillRow("G", "  2    4 ");
-        fillRow("H", "   3 8  1");
-        fillRow("I", "        7");
-    };
-    func.description = "example thursday puzzle - should be solvable";
-    func.readonly = true;
-    return func;
-}
-function isThisSolvableWithJustLogic() {
-    var func = function () {
-        fillRow("A", "3   75   ");
-        fillRow("B", "1   9  37");
-        fillRow("C", "2  4     ");
-        fillRow("D", "6    4 5 ");
-        fillRow("E", "  4 21  3");
-        fillRow("F", " 7  6    ");
-        fillRow("G", "        4");
-        fillRow("H", "  62   79");
-        fillRow("I", "48    3 6");
-    };
-    func.description = "Is this one solvable?";
-    func.readonly = true;
-    return func;
-}
-function unusuallyDifficultMondayPuzzle() {
-    var func = function () {
-        fillRow("A", "   6  71 ");
-        fillRow("B", "8 1 5 9  ");
-        fillRow("C", " 7    5  ");
-        fillRow("D", "9 7  3   ");
-        fillRow("E", "      2 9");
-        fillRow("F", " 4   8  5");
-        fillRow("G", "  9  2  3");
-        fillRow("H", " 6  7 1  ");
-        fillRow("I", " 1 3     ");
-    };
-    func.description = "Unusually difficult monday puzzle";
-    func.readonly = true;
-    return func;
-}
-function shouldBeSolvableWithJustLogic() {
-    var func = function () {
-        fillRow("A", " 64 183 9");
-        fillRow("B", "  3 751  ");
-        fillRow("C", " 7      5");
-        fillRow("D", "  1 5    ");
-        fillRow("E", " 85 6 24 ");
-        fillRow("F", "    9 5  ");
-        fillRow("G", "4      2 ");
-        fillRow("H", "  974 8  ");
-        fillRow("I", "3 892 71 ");
-    };
-    func.description = "Solvable using just logic";
-    func.readonly = true;
-    return func;
-}
-// as far as I know of this one is unsolvable using just logic - it requires you to guess and see if
-// any of those contraints work
-function unsolvableWithJustLogicExample() {
-    var func = function () {
-        fillRow("A", " 247  95 ");
-        fillRow("B", " 395    7");
-        fillRow("C", "715   4 6");
-        fillRow("D", " 58      ");
-        fillRow("E", "  61 87 5");
-        fillRow("F", "1 7  58  ");
-        fillRow("G", "9638  514");
-        fillRow("H", "482351679");
-        fillRow("I", "5714693  ");
-    };
-    func.description = "not solvable with logic - requires trial and error (and thus, lame)";
-    func.readonly = true;
-    return func;
-}
-// Dec 17
-function unsolvableWednesdayProblem() {
-    var func = function () {
-        fillRow("A", "     1 6 ");
-        fillRow("B", " 6 8 7  1");
-        fillRow("C", "37 5  9  ");
-        fillRow("D", "4  9   5 ");
-        fillRow("E", "  6   4 8");
-        fillRow("F", "   2  79 ");
-        fillRow("G", "    8    ");
-        fillRow("H", "592      ");
-        fillRow("I", "      1  ");
-    };
-    func.description = "wednesday problem - not sure if this is unsolveable";
-    func.readonly = true;
-    return func;
+function loadGames(grids) {
+    var predefinedSelect = document.getElementById('predefinedGrids');
+    for (var puzzleName in grids) {
+        var rows = grids[puzzleName];
+        var option = document.createElement("option");
+        option.text = puzzleName;
+        option.gridData = grids[puzzleName];
+        predefinedSelect.appendChild(option);
+    }
 }
 // so we can eliminate possible values in one of 3 ways:
 // 1. the value already exists in a cell in the column
@@ -250,20 +156,11 @@ function eliminate(cellTextField, valueToRemove) {
         return;
     }
 }
-
 function loadGrid() {
-    var predefinedGrids = getListOfPredefinedGrids();
     var predefinedSelect = document.getElementById('predefinedGrids');
-    predefinedGrids.forEach(function (gridFunc) {
-        var option = document.createElement("option");
-        option.innerHTML = gridFunc.description;
-        option.func = gridFunc;
-        predefinedSelect.appendChild(option);
-    });
     onChangeSelect(predefinedSelect);
 }
 function onChangeSelect(select) {
-    var func = select.options[select.selectedIndex].func;
-    populateGrid(func);
+    var gridData = select.options[select.selectedIndex].gridData;
+    populateGrid(gridData);
 }
-loadGrid();

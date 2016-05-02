@@ -1,31 +1,31 @@
 var gridName = "grid";
 var rowCoords = 'ABCDEFGHI';
-var columnCoords = [1,2,3,4,5,6,7,8,9];
+var columnCoords = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 interface CellDiv extends HTMLInputElement {
-	possibles : string
+	possibles: string
 }
 
-function createCell(id) {
+function createCell(id: string) {
 	var cellDiv = <CellDiv>document.createElement('input');
-		
+
 	// each cell is an editable text field
 	cellDiv.type = "text";
 	cellDiv.id = id;
-	cellDiv.className = "cell";		
+	cellDiv.className = "cell";
 	cellDiv.possibles = "123456789";
 	cellDiv.onfocus = function () {
 		var possiblesSpan = document.getElementById("possibles");
 		possiblesSpan.innerHTML = cellDiv.possibles;
 	};
-	
+
 	return cellDiv;
 }
 
-function populateGrid(chosenPopulationFunction) {
+function populateGrid(gridData: string[]) {
 	initGrid();
-	chosenPopulationFunction();
-	stylize(chosenPopulationFunction.readonly);
+	fillUsingData(gridData);
+	stylize(true);
 }
 
 function stylize(markReadOnly) {
@@ -34,7 +34,7 @@ function stylize(markReadOnly) {
 		for (var columnCoord = 1; columnCoord <= 9; ++columnCoord) {
 			var coord = rowCoord + columnCoord;
 			var cell = getCell(coord);
-			
+
 			if (cell.possibles != null) {
 				cell.className += " hasPossibles"
 				cell.value = cell.possibles;
@@ -43,7 +43,7 @@ function stylize(markReadOnly) {
 			if (markReadOnly) {
 				cell.readOnly = true;
 			}
-		}	
+		}
 	});
 }
 
@@ -52,14 +52,14 @@ function stylize(markReadOnly) {
 function initGrid() {
 	var gridDiv = document.getElementById(gridName);
 	gridDiv.innerHTML = '';
-	
-	rowCoords.split("").forEach(function(row) {
+
+	rowCoords.split("").forEach(function (row) {
 		for (var column = 1; column <= 9; ++column) {
 			// id's like "A1", etc...
 			var cell = createCell(row + column);
 			gridDiv.appendChild(cell);
 		}
-	 });
+	});
 }
 
 // id a string like 'A1'
@@ -67,14 +67,14 @@ function getRowNeighborCells(id) {
 	var row = id[0];
 	var col = id[1];
 
-	return getCells([row], columnCoords, id);	
+	return getCells([row], columnCoords, id);
 }
 
 function getCells(rows, columns, skip) {
 	var cells = [];
 
-	rows.forEach(function(row) {
-		columns.forEach(function(column) {
+	rows.forEach(function (row) {
+		columns.forEach(function (column) {
 			var coord = row + column;
 
 			if (coord === skip) {
@@ -104,199 +104,96 @@ function getColumnNeighborCells(id) {
 function getSquareNeighborCells(id) {
 	var row = id[0];
 	var col = id[1];
-		
+
 	// get the nearest interval and then grab +3 squares from there
-	var columnStart = Math.floor((col - 1)/3) * 3; // (ie, 0 means 0,1,2, 1 means 3,4,5 and 2 means 6,7,8)
+	var columnStart = Math.floor((col - 1) / 3) * 3; // (ie, 0 means 0,1,2, 1 means 3,4,5 and 2 means 6,7,8)
 	++columnStart;
-	
+
 	var rowIndex = rowCoords.indexOf(row);
 	var rowOffset = Math.floor(rowIndex / 3) * 3;
-	
+
 	return getCells(
-		[ rowCoords[rowOffset], rowCoords[rowOffset + 1], rowCoords[rowOffset + 2] ],
-		[ columnStart, columnStart + 1, columnStart + 2 ],
+		[rowCoords[rowOffset], rowCoords[rowOffset + 1], rowCoords[rowOffset + 2]],
+		[columnStart, columnStart + 1, columnStart + 2],
 		id
-	 );	
+	);
 }
 
-function getCell(coord) : CellDiv {
+function getCell(coord): CellDiv {
 	var cell = <CellDiv>document.getElementById(coord);
-	
+
 	if (cell == null) {
 		throw "Failed to find cell with coord '" + coord + "'";
 	}
-	
+
 	return cell;
 }
 
 function setCell(id, value) {
 	var cell = getCell(id);
-	cell.value = value;	
+	cell.value = value;
 	cell.possibles = null;
-	
+
 	var rowNeighborCells = getRowNeighborCells(id);
 	var columnNeighborCells = getColumnNeighborCells(id);
 	var squareNeighborCells = getSquareNeighborCells(id);
-	
+
 	// go through and eliminate this value from their list
-	rowNeighborCells.forEach(function(cell) {
+	rowNeighborCells.forEach(function (cell) {
 		eliminate(cell, value);
 	});
-	
-	columnNeighborCells.forEach(function(cell) {
+
+	columnNeighborCells.forEach(function (cell) {
 		eliminate(cell, value);
 	});
-	
-	squareNeighborCells.forEach(function(cell) {
+
+	squareNeighborCells.forEach(function (cell) {
 		eliminate(cell, value);
 	});
 }
 
-function fillRow(rowCoord, rowValuesStr) {
+function fillRow(rowId: string, rowValuesStr: string) {
 	for (var i = 1; i <= 9; ++i) {
 		var value = rowValuesStr[i - 1];
 		if (value == " ") {
-			continue;			
+			continue;
 		}
-		
-		setCell(rowCoord + i, rowValuesStr[i -1] );
-	}	
+
+		setCell(rowId + i, rowValuesStr[i - 1]);
+	}
 }
 
-function getListOfPredefinedGrids() {
-    var predefinedGrids = [
-		shouldBeSolvableWithJustLogic(),
-		unsolvableWithJustLogicExample(),
-		isThisSolvableWithJustLogic(),
-		unusuallyDifficultMondayPuzzle(),
-		exampleThursdayPuzzle(),
-		unsolvableWednesdayProblem()
-	];
+function fillUsingData(grid: string[]) {
+	for (var row = 0; row < 9; ++row) {
+		for (var col = 0; col < 9; ++col) {
+			var value = grid[row][col];
+
+			if (value == " ") {
+				continue;
+			}
+
+			setCell(rowCoords[row] + (col + 1), value);
+		}
+	}
+}
+
+function loadGames(grids: {[key: string]: string[]}) {
+	var predefinedSelect = document.getElementById('predefinedGrids');
 	
-	return predefinedGrids;
+	for (var puzzleName in grids) {
+		var rows = grids[puzzleName];		
+		var option = <PopulationOption>document.createElement("option");
+		
+		option.text = puzzleName;
+		option.gridData = grids[puzzleName];		
+		
+		predefinedSelect.appendChild(option);
+	}
 }
 
 interface PopulationFunction extends Function {
-	readonly? : boolean
+	readonly?: boolean
 	description?: string
-}
-
-function emptyFunction() : PopulationFunction{
-    var func = <PopulationFunction>function () {};
-    func.description = "Empty - fill in your own puzzle";
-    return func;
-}
-
-function exampleThursdayPuzzle() : PopulationFunction {
-	var func = <PopulationFunction>function() {
-		fillRow("A", " 9 1 3   ");
-		fillRow("B", "  5  6  2");
-		fillRow("C", " 7 45  6 ");
-		fillRow("D", "   2  1  ");
-		fillRow("E", "  79     ");
-		fillRow("F", " 8  1  5 ");
-		fillRow("G", "  2    4 ");
-		fillRow("H", "   3 8  1");
-		fillRow("I", "        7");
-	};
-	
-	func.description = "example thursday puzzle - should be solvable";
-	func.readonly = true;
-	
-	return func;
-}
-
-function isThisSolvableWithJustLogic() : PopulationFunction{
-	var func = <PopulationFunction>function() {
-		fillRow("A", "3   75   ");		
-		fillRow("B", "1   9  37");
-		fillRow("C", "2  4     ");
-		fillRow("D", "6    4 5 ");
-		fillRow("E", "  4 21  3");
-		fillRow("F", " 7  6    ");
-		fillRow("G", "        4");
-		fillRow("H", "  62   79");
-		fillRow("I", "48    3 6");
-	};
-	
-	func.description = "Is this one solvable?";
-	func.readonly = true;
-	return func;
-}   
-
-function unusuallyDifficultMondayPuzzle() : PopulationFunction{
-	var func = <PopulationFunction>function() {
-		fillRow("A", "   6  71 ");
-		fillRow("B", "8 1 5 9  ");
-		fillRow("C", " 7    5  ");
-		fillRow("D", "9 7  3   ");
-		fillRow("E", "      2 9");
-		fillRow("F", " 4   8  5");
-		fillRow("G", "  9  2  3");
-		fillRow("H", " 6  7 1  ");
-		fillRow("I", " 1 3     ");
-	};
-	
-	func.description = "Unusually difficult monday puzzle";
-	func.readonly = true;
-	return func;
-}
-
-function shouldBeSolvableWithJustLogic() : PopulationFunction{
-	var func = <PopulationFunction>function() {
-		fillRow("A", " 64 183 9");
-		fillRow("B", "  3 751  ");
-		fillRow("C", " 7      5");
-		fillRow("D", "  1 5    ");
-		fillRow("E", " 85 6 24 ");
-		fillRow("F", "    9 5  ");
-		fillRow("G", "4      2 ");
-		fillRow("H", "  974 8  ");
-		fillRow("I", "3 892 71 ");
-	};
-	
-	func.description = "Solvable using just logic";
-	func.readonly = true;
-	return func;
-}
-
-// as far as I know of this one is unsolvable using just logic - it requires you to guess and see if
-// any of those contraints work
-function unsolvableWithJustLogicExample() : PopulationFunction{
-	var func = <PopulationFunction>function() {
-		fillRow("A", " 247  95 ");
-		fillRow("B", " 395    7");
-		fillRow("C", "715   4 6");
-		fillRow("D", " 58      ");
-		fillRow("E", "  61 87 5");
-		fillRow("F", "1 7  58  ");
-		fillRow("G", "9638  514");
-		fillRow("H", "482351679");
-		fillRow("I", "5714693  ");	
-	};
-	
-	func.description = "not solvable with logic - requires trial and error (and thus, lame)";
-	func.readonly = true;
-	return func;
-}
-
-// Dec 17
-function unsolvableWednesdayProblem() : PopulationFunction{
-	var func = <PopulationFunction>function() {
-		fillRow("A", "     1 6 ");
-		fillRow("B", " 6 8 7  1");
-		fillRow("C", "37 5  9  ");
-		fillRow("D", "4  9   5 ");
-		fillRow("E", "  6   4 8");
-		fillRow("F", "   2  79 ");
-		fillRow("G", "    8    ");
-		fillRow("H", "592      ");
-		fillRow("I", "      1  ");
-	};
-	
-	func.description = "wednesday problem - not sure if this is unsolveable";
-	func.readonly = true;
-	return func;
 }
 
 // so we can eliminate possible values in one of 3 ways:
@@ -309,9 +206,9 @@ function eliminate(cellTextField, valueToRemove) {
 	if (cellTextField.possibles == null) {
 		return;
 	}
-	
+
 	cellTextField.possibles = cellTextField.possibles.replace(valueToRemove, "");
-	
+
 	if (cellTextField.possibles.length == 1) {
 		cellTextField.className += " calculated";
 		setCell(cellTextField.id, cellTextField.possibles);
@@ -319,33 +216,16 @@ function eliminate(cellTextField, valueToRemove) {
 	}
 }
 
-function isFullySolvedGrid() {
-	// if any of the cell's 'possibles' member is not null then it's not fully solved
-	
-}
-
 interface PopulationOption extends HTMLOptionElement {
-	func: Function
+	gridData: string[]
 }
 
 function loadGrid() {
-	var predefinedGrids = getListOfPredefinedGrids();
-	var predefinedSelect = document.getElementById('predefinedGrids');
-
-	predefinedGrids.forEach(function (gridFunc) {
-		var option = <PopulationOption>document.createElement("option");
-		option.innerHTML = gridFunc.description;
-		option.func = gridFunc;
-
-		predefinedSelect.appendChild(option);
-	});
-
+	var predefinedSelect = <HTMLSelectElement>document.getElementById('predefinedGrids');
 	onChangeSelect(predefinedSelect);
 }
 
-function onChangeSelect(select) {
-	var func = select.options[select.selectedIndex].func;
-	populateGrid(func);
+function onChangeSelect(select : HTMLSelectElement) {
+	var gridData = (<PopulationOption>select.options[select.selectedIndex]).gridData;
+	populateGrid(gridData);
 }
-
-loadGrid();
