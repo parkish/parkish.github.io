@@ -1,0 +1,77 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    input[type="text"] {
+      display: block;
+      margin-bottom: 1em;
+      width: 30em;
+    }
+
+    input[type="password"] {
+      display: block;
+      margin-bottom: 1em;
+      width: 30em;
+    }
+
+    label {
+      display: block;
+    }
+
+    textarea {
+      display: block;
+      width: 30em;
+    }
+  </style>
+</head>
+
+<body>
+  <form>
+    <label>Key Name</label>
+    <input type="text" id="keyName" placeholder="keyName" />
+
+    <label>Key</label>
+    <input type="password" id="key" placeholder="key" />
+
+    <label>URI (make sure it's forward-slash terminated)</label>
+    <input type="text" id="uri" placeholder="https://&lt;yourservicebus&gt;.servicebus.windows.net/"
+      value="https://&lt;yourservicebus&gt;.servicebus.windows.net/" />
+
+    <div style="display: none">
+      <label>nowMs</label>
+      <input type="text" id="nowMs" placeholder="nowMs" />
+
+      <label>ttl</label>
+      <input type="text" id="ttl" placeholder="ttl" />
+    </div>
+
+    <input type="button" value="Generate" onclick="calculateSasUri();" />
+
+    <label>Generated SAS URI</label>
+    <textarea id="sasUri"></textarea>
+  </form>
+
+  <script src="./dist/sasBrowser.js"></script>
+  <script>
+    async function calculateSasUri() {
+      const keyText = document.getElementById("key").value;
+      const uritext = document.getElementById("uri").value;
+      const keyName = document.getElementById("keyName").value;
+
+      const timeMs = Number(document.getElementById("nowMs").value);
+      const ttl = Number(document.getElementById("ttl").value);
+
+      const token = await createSharedAccessToken(uritext, keyName, keyText, isNaN(timeMs) ? undefined : timeMs, isNaN(ttl) ? undefined : ttl);
+      document.getElementById("sasUri").innerText = token;
+    }
+
+    document.getElementById("nowMs").value = new Date().getTime();
+    document.getElementById("ttl").value = 1599599387;
+  </script>
+
+</body>
+
+</html>
